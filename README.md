@@ -31,16 +31,56 @@ Abre [http://localhost:3000](http://localhost:3000).
 }
 ```
 
+## Ajustar cámara y límites (LatticeXR patch)
+
+Cada escena puede incluir:
+
+- `lattice-config.json` — altura de cabeza, padding de límites, yaw inicial
+- `lattice-patch.js` — control first-person WASD sin Q/E
+
+Tras exportar un HTML nuevo de SuperSplat, ejecuta:
+
+```bash
+node scripts/inject-lattice-patch.mjs public/scenes/<slug>
+```
+
+Parámetros útiles en `lattice-config.json`:
+
+| Campo | Descripción |
+| --- | --- |
+| `headHeight` | Altura fija de cámara (metros/unidades de escena) |
+| `headHeightOffsetFromFloor` | Alternativa: suelo + offset (default 1.65) |
+| `boundaryPadding` | Margen interior para no salir del splat (default 0.8) |
+| `initialYaw` | Dirección inicial al entrar |
+| `initialPosition` | `[x, y, z]` opcional para punto de inicio |
+| `fov` | Campo de visión en grados (default del export: 50; recomendado 70–85) |
+| `playerRadius` | Radio del “cuerpo” para chocar con paredes (default 0.35) |
+| `walkablePolygon` | Polígono `[[x,z], ...]` del suelo transitable; si es `null`, usa el rectángulo del bbox |
+| `walls` | Paredes interiores: `{ "a": [x,z], "b": [x,z], "thickness": 0.2 }` |
+| `debug` | `true` muestra coordenadas en pantalla; Shift+click en canvas las imprime en consola |
+
+Ejemplo de paredes interiores:
+
+```json
+"walls": [
+  { "a": [-3.5, 1.2], "b": [2.0, 1.2], "thickness": 0.25 },
+  { "a": [2.0, 1.2], "b": [2.0, 6.5], "thickness": 0.25 }
+]
+```
+
+Activa `"debug": true`, camina hasta una esquina de pared, Shift+click y copia las coordenadas desde la consola del navegador.
+
 ## Colisión y navegación WASD
 
-La navegación con **WASD** y los límites de paredes se configuran en **SuperSplat Studio antes de exportar**, no en este repositorio.
+**En LatticeXR:** la colisión básica se define en `lattice-config.json` (polígono del suelo + segmentos de pared). No es física voxel; es una aproximación geométrica que puedes afinar coordenada a coordenada.
 
-1. Abre la escena en [SuperSplat Studio](https://superspl.at).
-2. Sube geometría de colisión en **Assets → Collision** (datos voxel).
-3. Ajusta la cámara inicial y prueba el movimiento en el viewport.
-4. Guarda y re-exporta como HTML solo cuando la colisión sea correcta.
+**En SuperSplat Studio (opcional, más preciso):** puedes exportar colisión voxel real antes del HTML. Eso requiere re-exportar la escena desde [SuperSplat Studio](https://superspl.at):
 
-Si un HTML ya exportado no tiene colisión, debes **re-exportarlo** desde SuperSplat.
+1. Sube geometría de colisión en **Assets → Collision**.
+2. Prueba el movimiento en el viewport.
+3. Re-exporta como HTML.
+
+Si un HTML ya exportado no tiene voxel collision, el patch de LatticeXR sigue siendo la vía principal para delimitar el espacio.
 
 ## Archivos grandes y Git LFS
 

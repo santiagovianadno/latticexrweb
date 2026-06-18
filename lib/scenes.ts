@@ -8,12 +8,12 @@ export type Scene = {
 
 export const scenes: Scene[] = [
   {
-    slug: "ejemplo",
-    title: "Espacio de Ejemplo",
+    slug: "galeria-lo-contador",
+    title: "Galería Lo Contador",
     description:
-      "Escena de demostración. Reemplaza este archivo con tu exportación HTML de SuperSplat.",
-    htmlPath: "/scenes/ejemplo/index.html",
-    poster: "/scenes/ejemplo/poster.svg",
+      "Recorrido inmersivo a altura de cabeza por la galería interior, con navegación WASD y límites de espacio.",
+    htmlPath: "/scenes/galeria-lo-contador/index.html",
+    poster: "/scenes/galeria-lo-contador/poster.svg",
   },
 ];
 

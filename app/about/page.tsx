@@ -58,18 +58,18 @@ export default function AboutPage() {
                 <kbd className="rounded border border-border bg-surface px-1.5 py-0.5 font-mono text-xs text-foreground">
                   W A S D
                 </kbd>{" "}
-                para moverte, el mouse para mirar alrededor, y la rueda para
-                acercar o alejar.
+                para caminar a altura de cabeza, y el mouse para mirar alrededor.
+                El movimiento vertical con Q/E está desactivado.
               </li>
               <li>
                 <strong className="text-foreground">Móvil:</strong> arrastra
-                para rotar la vista y usa los controles táctiles del visor
-                SuperSplat.
+                para rotar la vista y usa el joystick táctil para moverte.
               </li>
               <li>
-                Las paredes y límites del espacio interior están definidos por
-                la geometría de colisión configurada en SuperSplat Studio antes
-                de exportar cada escena.
+                Los límites del espacio interior se calculan automáticamente
+                desde la escena. Puedes afinarlos en{" "}
+                <code className="text-accent">lattice-config.json</code> de cada
+                escena.
               </li>
             </ul>
 

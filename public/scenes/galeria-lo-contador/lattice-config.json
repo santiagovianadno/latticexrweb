@@ -1,0 +1,28 @@
+{
+  "headHeight": 7.5,
+  "headHeightOffsetFromFloor": 1.65,
+  "fov": 90,
+  "boundaryPadding": 0.8,
+  "playerRadius": 0.35,
+  "initialYaw": 0,
+  "pitchLimit": 28,
+  "moveSpeed": 2.8,
+  "forceFlyMode": true,
+  "disableVerticalKeys": true,
+  "hideModeToggle": true,
+  "hideSuperSplatUI": false,
+  "walkablePolygon": [
+    [10.0, 6.17],
+    [-6.04, 10.14],
+    [-10.0, -5.16],
+    [7.89, -10.0]
+  ],
+  "bounds": {
+    "minX": -10.0,
+    "maxX": 10.0,
+    "minZ": -10.0,
+    "maxZ": 10.14
+  },
+  "walls": [],
+  "debug": false
+}
