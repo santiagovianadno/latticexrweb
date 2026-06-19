@@ -5,15 +5,26 @@ import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { HeroStepsJourney } from "@/components/HeroStepsJourney";
+import { MediaLoadingOverlay } from "@/components/MediaLoadingOverlay";
 import { siteCopy } from "@/lib/site-copy";
 
 const headlineWords = siteCopy.hero.headline.split(" ");
 
 export function HeroPitch() {
-  const { hero } = siteCopy;
+  const { hero, loading } = siteCopy;
   const [scanDone, setScanDone] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const videoLayerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useLayoutEffect(() => {
+    if (
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      setVideoReady(true);
+    }
+  }, []);
 
   useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -45,15 +56,28 @@ export function HeroPitch() {
   return (
     <section ref={sectionRef} className="relative">
       <div ref={videoLayerRef} className="pointer-events-none absolute inset-0">
-        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden">
+        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden bg-background">
+          {!videoReady && (
+            <MediaLoadingOverlay label={loading.heroVideo} compact />
+          )}
+
           <video
+            ref={videoRef}
             autoPlay
             muted
             loop
             playsInline
             preload="auto"
-            className="absolute inset-0 h-full w-full object-cover"
+            className={`hero-video-layer absolute inset-0 h-full w-full object-cover ${
+              videoReady ? "is-ready" : ""
+            }`}
             aria-hidden
+            onCanPlay={() => setVideoReady(true)}
+            onLoadedData={() => {
+              if (videoRef.current && videoRef.current.readyState >= 2) {
+                setVideoReady(true);
+              }
+            }}
           >
             <source src="/latticexr-hero.mp4" type="video/mp4" />
           </video>

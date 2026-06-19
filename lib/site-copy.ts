@@ -57,6 +57,12 @@ export const siteCopy = {
     button: "Descargar APK",
     href: "/downloads/latticexr-quest.apk",
   },
+  loading: {
+    heroVideo: "Cargando video",
+    scenePreview: "Cargando vista previa",
+    scenePreviewHint: "Gaussian Splat · puede tardar unos segundos",
+    scenePreviewFailed: "Vista previa no disponible",
+  },
   footer: {
     line: "LatticeXR · Santiago Viana · Diseño UC",
     contactLabel: "Contacto",

@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { MediaLoadingOverlay } from "@/components/MediaLoadingOverlay";
 import type { Scene } from "@/lib/scenes";
 import { buildScenePreviewUrl } from "@/lib/scene-preview-pool";
+import { siteCopy } from "@/lib/site-copy";
 
 type SceneCardProps = {
   scene: Scene;
@@ -11,16 +13,22 @@ type SceneCardProps = {
 };
 
 const PREVIEW_FAIL_MS = 45000;
+const PREVIEW_ROOT_MARGIN = "640px 0px";
 
 export function SceneCard({ scene, index }: SceneCardProps) {
+  const { loading } = siteCopy;
   const [canHoverPreview, setCanHoverPreview] = useState(false);
   const [previewReady, setPreviewReady] = useState(false);
   const [previewFailed, setPreviewFailed] = useState(false);
+  const [loadPreview, setLoadPreview] = useState(false);
+  const previewRootRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const previewUrl = buildScenePreviewUrl(scene.htmlPath, scene.slug);
   const useVideo = Boolean(scene.previewVideo);
   const showLivePreview = previewReady && !previewFailed;
+  const showLoadingOverlay =
+    loadPreview && !showLivePreview && !previewFailed;
 
   useEffect(() => {
     const mq = window.matchMedia(
@@ -34,6 +42,26 @@ export function SceneCard({ scene, index }: SceneCardProps) {
 
   useEffect(() => {
     if (useVideo) return;
+
+    const node = previewRootRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setLoadPreview(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: PREVIEW_ROOT_MARGIN },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [useVideo]);
+
+  useEffect(() => {
+    if (useVideo || !loadPreview) return;
 
     let ready = false;
 
@@ -53,7 +81,7 @@ export function SceneCard({ scene, index }: SceneCardProps) {
       window.removeEventListener("message", onMessage);
       window.clearTimeout(failTimer);
     };
-  }, [scene.slug, useVideo]);
+  }, [scene.slug, useVideo, loadPreview]);
 
   const postToPreview = useCallback((type: string) => {
     iframeRef.current?.contentWindow?.postMessage({ type }, "*");
@@ -88,7 +116,10 @@ export function SceneCard({ scene, index }: SceneCardProps) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="scene-card-preview relative aspect-[4/3] overflow-hidden bg-surface-elevated">
+      <div
+        ref={previewRootRef}
+        className="scene-card-preview relative aspect-[4/3] overflow-hidden bg-surface-elevated"
+      >
         {useVideo && scene.previewVideo ? (
           <video
             ref={videoRef}
@@ -109,31 +140,43 @@ export function SceneCard({ scene, index }: SceneCardProps) {
             <img
               src={scene.poster}
               alt={scene.title}
-              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
                 showLivePreview ? "opacity-0" : "opacity-100"
               }`}
               loading="eager"
               decoding="async"
             />
 
-            <iframe
-              ref={iframeRef}
-              src={previewUrl}
-              title={`Preview: ${scene.title}`}
-              className={`scene-card-preview-frame pointer-events-none absolute inset-0 h-full w-full border-0 transition-opacity duration-500 ${
-                showLivePreview ? "opacity-100" : "opacity-0"
-              }`}
-              loading="eager"
-              tabIndex={-1}
-            />
+            {loadPreview ? (
+              <iframe
+                ref={iframeRef}
+                src={previewUrl}
+                title={`Preview: ${scene.title}`}
+                className={`scene-card-preview-frame pointer-events-none absolute inset-0 h-full w-full border-0 transition-opacity duration-700 ${
+                  showLivePreview ? "opacity-100" : "opacity-0"
+                }`}
+                loading="lazy"
+                tabIndex={-1}
+              />
+            ) : null}
           </>
         )}
 
-        {!showLivePreview && !useVideo && !previewFailed && (
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1 bg-background/50">
-            <div className="scene-card-preview-bar h-full bg-accent/80" />
+        {showLoadingOverlay ? (
+          <MediaLoadingOverlay
+            label={loading.scenePreview}
+            hint={loading.scenePreviewHint}
+            compact
+          />
+        ) : null}
+
+        {previewFailed && !useVideo ? (
+          <div className="pointer-events-none absolute inset-x-0 bottom-3 z-[2] flex justify-center">
+            <span className="rounded-sm border border-border bg-background/85 px-2 py-1 font-[family-name:var(--font-syne)] text-[9px] uppercase tracking-wider text-muted backdrop-blur-sm">
+              {loading.scenePreviewFailed}
+            </span>
           </div>
-        )}
+        ) : null}
 
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/85 via-background/10 to-transparent" />
 
