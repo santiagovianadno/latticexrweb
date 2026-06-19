@@ -1,6 +1,6 @@
 # LatticeXR
 
-Herramienta **VR** para prototipado ágil de montajes expositivos sobre espacios reconstruidos con Gaussian Splatting. Este repositorio incluye la **web accesible** del Proyecto de Título de Diseño UC de **Santiago Viana**: catálogo de escenas propias, explorador curado de obras en [SuperSplat](https://superspl.at) y descarga del APK para Quest 3.
+Herramienta **MR** para prototipado ágil de montajes expositivos sobre espacios reconstruidos con Gaussian Splatting. Este repositorio incluye la **web accesible** del Proyecto de Título de Diseño UC de **Santiago Viana**: catálogo de escenas propias, explorador curado de obras en [SuperSplat](https://superspl.at) y descarga del APK para Quest 3.
 
 ## Desarrollo local
 
