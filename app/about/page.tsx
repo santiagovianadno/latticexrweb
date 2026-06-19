@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
+import { siteCopy } from "@/lib/site-copy";
 
 export const metadata: Metadata = {
   title: "Acerca de",
   description:
-    "LatticeXR — Proyecto de Título de Diseño UC por Santiago Viana.",
+    "LatticeXR — herramienta VR para prototipado de montajes expositivos por Santiago Viana.",
 };
 
 export default function AboutPage() {
+  const { about, footer } = siteCopy;
+
   return (
     <div className="lattice-bg relative flex min-h-dvh flex-col">
       <SiteHeader />
@@ -16,28 +19,40 @@ export default function AboutPage() {
       <main className="relative z-10 mx-auto w-full max-w-3xl flex-1 px-6 py-12 md:py-20">
         <article className="animate-fade-up">
           <p className="mb-4 font-[family-name:var(--font-syne)] text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-            Acerca del proyecto
+            {about.eyebrow}
           </p>
           <h1 className="font-[family-name:var(--font-syne)] text-4xl font-bold tracking-tight text-foreground md:text-5xl">
-            LatticeXR
+            Lattice<span className="text-accent">XR</span>
           </h1>
 
           <div className="mt-10 space-y-6 text-base leading-relaxed text-muted">
+            {about.paragraphs.map((paragraph) => (
+              <p key={paragraph.slice(0, 40)}>{paragraph}</p>
+            ))}
+
+            <h2 className="pt-4 font-[family-name:var(--font-syne)] text-xl font-semibold text-foreground">
+              Créditos
+            </h2>
             <p>
-              <strong className="text-foreground">LatticeXR</strong> es el
-              proyecto de título de{" "}
-              <strong className="text-foreground">Santiago Viana</strong> para
-              la carrera de Diseño de la{" "}
-              <strong className="text-foreground">
-                Pontificia Universidad Católica de Chile
-              </strong>
-              . El proyecto explora la reconstrucción y navegación de espacios
-              interiores mediante Gaussian Splatting, ofreciendo una experiencia
-              inmersiva accesible desde navegador web y dispositivos móviles.
+              Autor: Santiago Viana
+              <br />
+              {footer.advisorLabel}: {footer.advisorName}
+              <br />
+              Institución: Pontificia Universidad Católica de Chile
+              <br />
+              Programa: Diseño
+              <br />
+              Contacto:{" "}
+              <a
+                href={`mailto:${footer.contactEmail}`}
+                className="text-accent hover:underline"
+              >
+                {footer.contactEmail}
+              </a>
             </p>
 
             <p>
-              Cada escena es una exportación HTML generada en{" "}
+              Las escenas curadas en la galería provienen de la comunidad en{" "}
               <a
                 href="https://superspl.at"
                 target="_blank"
@@ -46,42 +61,8 @@ export default function AboutPage() {
               >
                 SuperSplat
               </a>
-              , integrada en este visor como catálogo navegable.
-            </p>
-
-            <h2 className="pt-4 font-[family-name:var(--font-syne)] text-xl font-semibold text-foreground">
-              Cómo navegar
-            </h2>
-            <ul className="list-inside list-disc space-y-2">
-              <li>
-                <strong className="text-foreground">Escritorio:</strong> usa{" "}
-                <kbd className="rounded border border-border bg-surface px-1.5 py-0.5 font-mono text-xs text-foreground">
-                  W A S D
-                </kbd>{" "}
-                para caminar a altura de cabeza, y el mouse para mirar alrededor.
-                El movimiento vertical con Q/E está desactivado.
-              </li>
-              <li>
-                <strong className="text-foreground">Móvil:</strong> arrastra
-                para rotar la vista y usa el joystick táctil para moverte.
-              </li>
-              <li>
-                Los límites del espacio interior se calculan automáticamente
-                desde la escena. Puedes afinarlos en{" "}
-                <code className="text-accent">lattice-config.json</code> de cada
-                escena.
-              </li>
-            </ul>
-
-            <h2 className="pt-4 font-[family-name:var(--font-syne)] text-xl font-semibold text-foreground">
-              Créditos
-            </h2>
-            <p>
-              Autor: Santiago Viana
-              <br />
-              Institución: Pontificia Universidad Católica de Chile
-              <br />
-              Programa: Diseño — Proyecto de Título
+              . Las escenas propias son exportaciones HTML integradas con el
+              patch LatticeXR.
             </p>
           </div>
 

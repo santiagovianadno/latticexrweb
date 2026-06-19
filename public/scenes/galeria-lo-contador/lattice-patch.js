@@ -275,22 +275,64 @@
     entity.setEulerAngles(cam.angles);
   }
 
-  function setInitialPose(viewer, config, bounds) {
-    const { state, events } = viewer.global;
-    const cam = viewer.cameraManager.camera;
+  function polygonCentroid(polygon) {
+    let sumX = 0;
+    let sumZ = 0;
+    for (const [x, z] of polygon) {
+      sumX += x;
+      sumZ += z;
+    }
+    return { x: sumX / polygon.length, z: sumZ / polygon.length };
+  }
+
+  function getEntryPose(config, bounds) {
+    if (!bounds) return null;
+
     const headY =
+      config.initialPosition?.[1] ??
       config.headHeight ??
       bounds.minY + (config.headHeightOffsetFromFloor ?? 1.65);
 
-    const x = config.initialPosition?.[0] ?? bounds.centerX;
-    const z = config.initialPosition?.[2] ?? bounds.centerZ;
-    const yaw = config.initialYaw ?? 0;
+    let x;
+    let z;
 
-    cam.position.set(x, headY, z);
-    cam.angles.set(0, yaw, 0);
+    if (config.initialPosition) {
+      x = config.initialPosition[0];
+      z = config.initialPosition[2];
+    } else if (config.walkablePolygon?.length >= 3) {
+      const center = polygonCentroid(config.walkablePolygon);
+      x = center.x;
+      z = center.z;
+    } else {
+      x = bounds.centerX;
+      z = bounds.centerZ;
+    }
+
+    const yaw = config.initialYaw ?? 0;
+    const pitch = config.initialPitch ?? 0;
+
+    return { x, headY, z, yaw, pitch };
+  }
+
+  function applyEntryPose(viewer, config, pose, yawOffset = 0) {
+    if (!pose) return;
+
+    const cam = viewer.cameraManager.camera;
+    cam.position.set(pose.x, pose.headY, pose.z);
+    cam.angles.set(pose.pitch, pose.yaw + yawOffset, 0);
     cam.distance = 0;
 
     applyFov(viewer, config);
+
+    const entity = viewer.global.camera;
+    entity.setPosition(cam.position);
+    entity.setEulerAngles(cam.angles);
+  }
+
+  function setInitialPose(viewer, config, bounds) {
+    const { state, events } = viewer.global;
+    const pose = getEntryPose(config, bounds);
+    if (!pose) return;
 
     if (config.forceFlyMode !== false) {
       const prev = state.cameraMode;
@@ -300,9 +342,7 @@
       }
     }
 
-    const entity = viewer.global.camera;
-    entity.setPosition(cam.position);
-    entity.setEulerAngles(cam.angles);
+    applyEntryPose(viewer, config, pose, 0);
   }
 
   async function loadConfig() {
@@ -356,7 +396,132 @@
     });
   }
 
+  function installPreviewMode(viewer, config) {
+    const { events, state, app } = viewer.global;
+    const params = new URLSearchParams(window.location.search);
+    const isStill = params.has("still");
+    const hold = params.has("hold") || isStill;
+    const rotateSpeed = parseFloat(
+      params.get("rotateSpeed") ||
+        config.previewRotateSpeed ||
+        "8",
+    );
+
+    const resolveBounds = () => {
+      const gsplatEntity = findGsplatEntity(app.root);
+      if (!gsplatEntity) return null;
+
+      let bounds = computeWorldBounds(
+        gsplatEntity,
+        config.boundaryPadding ?? 0.8,
+      );
+      if (config.bounds) {
+        bounds = { ...bounds, ...config.bounds };
+      }
+      return bounds;
+    };
+
+    const notifyReady = () => {
+      const slug = params.get("sceneSlug") || "";
+      window.parent?.postMessage(
+        { type: "latticexr-preview-ready", slug },
+        "*",
+      );
+    };
+
+    const capturePoster = () => {
+      if (!isStill) return;
+      const slug = params.get("sceneSlug") || "";
+      try {
+        const canvas = app.graphicsDevice.canvas;
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.82);
+        window.parent?.postMessage(
+          { type: "latticexr-poster-captured", slug, dataUrl },
+          "*",
+        );
+      } catch {
+        /* canvas export blocked */
+      }
+    };
+
+    let booted = false;
+    let entryPose = null;
+    let yawOffset = 0;
+    let rotationEnabled = false;
+
+    const applyHeldPose = () => {
+      if (!entryPose) return;
+      applyEntryPose(viewer, config, entryPose, yawOffset);
+    };
+
+    const boot = () => {
+      if (booted) return;
+      if (!state.readyToRender) return;
+
+      const bounds = resolveBounds();
+      entryPose = getEntryPose(config, bounds);
+      if (!entryPose) {
+        notifyReady();
+        return;
+      }
+
+      booted = true;
+      yawOffset = 0;
+      rotationEnabled = !hold && !isStill;
+
+      if (state.cameraMode !== "fly") {
+        const prev = state.cameraMode;
+        state.cameraMode = "fly";
+        events.fire("cameraMode:changed", "fly", prev);
+      }
+
+      viewer.inputController.update = function () {};
+
+      applyEntryPose(viewer, config, entryPose, 0);
+
+      const cm = viewer.cameraManager;
+      cm.update = function (dt) {
+        if (rotationEnabled) {
+          yawOffset += rotateSpeed * dt;
+        }
+        applyEntryPose(viewer, config, entryPose, yawOffset);
+      };
+
+      window.addEventListener("message", (event) => {
+        if (event.data?.type === "latticexr-preview-play") {
+          rotationEnabled = true;
+          app.renderNextFrame = true;
+        }
+        if (event.data?.type === "latticexr-preview-pause") {
+          rotationEnabled = false;
+          yawOffset = 0;
+          applyHeldPose();
+          app.renderNextFrame = true;
+        }
+      });
+
+      app.renderNextFrame = true;
+      app.once("frameend", () => {
+        requestAnimationFrame(() => {
+          notifyReady();
+          capturePoster();
+        });
+      });
+    };
+
+    if (state.readyToRender) {
+      boot();
+    } else {
+      events.once("firstFrame", boot);
+    }
+  }
+
   function installViewerPatch(viewer, config) {
+    if (new URLSearchParams(window.location.search).has("preview")) {
+      installPreviewMode(viewer, config);
+      return;
+    }
+
     const { app, state } = viewer.global;
     let bounds = null;
     let collision = null;
@@ -429,9 +594,18 @@
   window.LatticeXR = {
     async patchViewer(viewer) {
       const config = await loadConfig();
-      const { events } = viewer.global;
+      const { events, state } = viewer.global;
+      const isPreview = new URLSearchParams(window.location.search).has(
+        "preview",
+      );
 
       const run = () => installViewerPatch(viewer, config);
+
+      if (isPreview) {
+        events.once("firstFrame", run);
+        if (state.readyToRender) run();
+        return;
+      }
 
       if (viewer.inputController && viewer.cameraManager) {
         run();

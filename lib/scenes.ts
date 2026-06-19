@@ -4,14 +4,18 @@ export type Scene = {
   description: string;
   htmlPath: string;
   poster: string;
+  /** Loop corto (mp4/webm) — preview tipo video al hover, ideal vs iframe pesado */
+  previewVideo?: string;
+  /** Mini case study del montaje expositivo */
+  context?: string;
+  tags?: string[];
 };
 
 export const scenes: Scene[] = [
   {
     slug: "galeria-lo-contador",
     title: "Galería Lo Contador",
-    description:
-      "Recorrido inmersivo a altura de cabeza por la galería interior, con navegación WASD y límites de espacio.",
+    description: "",
     htmlPath: "/scenes/galeria-lo-contador/index.html",
     poster: "/scenes/galeria-lo-contador/poster.svg",
   },

@@ -1,8 +1,6 @@
 # LatticeXR
 
-Visor web y móvil de Gaussian Splats para el **Proyecto de Título de Diseño UC** de **Santiago Viana**.
-
-Explora espacios interiores reconstruidos con Gaussian Splatting. Cada escena es una exportación HTML de [SuperSplat](https://superspl.at), integrada en un catálogo navegable con Next.js.
+Herramienta **VR** para prototipado ágil de montajes expositivos sobre espacios reconstruidos con Gaussian Splatting. Este repositorio incluye la **web accesible** del Proyecto de Título de Diseño UC de **Santiago Viana**: catálogo de escenas propias, explorador curado de obras en [SuperSplat](https://superspl.at) y descarga del APK para Quest 3.
 
 ## Desarrollo local
 
@@ -13,7 +11,22 @@ npm run dev
 
 Abre [http://localhost:3000](http://localhost:3000).
 
-## Agregar una escena
+## Contenido editable
+
+Reemplaza los placeholders sin tocar los componentes:
+
+| Qué | Dónde |
+| --- | --- |
+| Pitch, pasos, textos de secciones, footer | [`lib/site-copy.ts`](lib/site-copy.ts) |
+| Obras curadas de superspl.at (URLs reales desde Embed) | [`lib/supersplat-showcase.ts`](lib/supersplat-showcase.ts) |
+| Contexto y tags de escenas propias | [`lib/scenes.ts`](lib/scenes.ts) |
+| APK Quest 3 | [`public/downloads/latticexr-quest.apk`](public/downloads/) |
+| Email y profesor guía | [`lib/site-copy.ts`](lib/site-copy.ts) → `footer` |
+| Repositorio GitHub | [`lib/site-copy.ts`](lib/site-copy.ts) → `github.url` |
+
+Las URLs de superspl.at deben copiarse desde el botón **Embed** de cada escena pública (`https://superspl.at/scene/…`).
+
+## Agregar una escena propia
 
 1. Configura la escena en **SuperSplat Studio** (cámara, colisión, controles).
 2. Exporta como **Viewer App → HTML** (archivo único).
@@ -121,10 +134,13 @@ git push -u origin main
 ## Estructura
 
 ```
-app/           Páginas Next.js (galería, visor, acerca de)
-components/    UI reutilizable
-lib/scenes.ts  Registro de escenas
-public/scenes/ Exportaciones HTML de SuperSplat
+app/                        Páginas Next.js (home, visor, acerca de)
+components/                 UI (HeroPitch, SplatExplorer, SceneCard…)
+lib/site-copy.ts            Textos del sitio (placeholders editables)
+lib/supersplat-showcase.ts  Obras curadas de superspl.at
+lib/scenes.ts               Registro de escenas propias
+public/scenes/              Exportaciones HTML de SuperSplat
+public/downloads/           APK Quest 3
 ```
 
 ## Créditos

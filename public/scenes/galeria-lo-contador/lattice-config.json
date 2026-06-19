@@ -1,10 +1,11 @@
 {
   "headHeight": 7.5,
   "headHeightOffsetFromFloor": 1.65,
-  "fov": 90,
+  "fov": 120,
   "boundaryPadding": 0.8,
   "playerRadius": 0.35,
   "initialYaw": 0,
+  "initialPosition": [0.46, 7.5, 0.29],
   "pitchLimit": 28,
   "moveSpeed": 2.8,
   "forceFlyMode": true,
@@ -24,5 +25,6 @@
     "maxZ": 10.14
   },
   "walls": [],
-  "debug": false
+  "debug": false,
+  "previewRotateSpeed": 8
 }

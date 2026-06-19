@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Newsreader, Syne } from "next/font/google";
+import { Aldrich, IBM_Plex_Sans, Syne } from "next/font/google";
 import "./globals.css";
 
 const syne = Syne({
@@ -8,11 +8,16 @@ const syne = Syne({
   weight: ["500", "600", "700", "800"],
 });
 
-const newsreader = Newsreader({
-  variable: "--font-newsreader",
+const aldrich = Aldrich({
+  variable: "--font-aldrich",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
+  weight: "400",
+});
+
+const ibmPlexSans = IBM_Plex_Sans({
+  variable: "--font-body",
+  subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -26,14 +31,17 @@ export const metadata: Metadata = {
     template: "%s · LatticeXR",
   },
   description:
-    "Visor web de Gaussian Splats para el Proyecto de Título de Diseño UC — Santiago Viana.",
+    "Herramienta VR para prototipado de montajes expositivos sobre Gaussian Splats — Proyecto de Título de Diseño UC, Santiago Viana.",
   openGraph: {
     title: "LatticeXR",
     description:
-      "Explora espacios interiores reconstruidos con Gaussian Splatting.",
+      "Prototipa montajes expositivos en VR y explora espacios reconstruidos con Gaussian Splatting desde el navegador.",
     type: "website",
     locale: "es_CL",
     siteName: "LatticeXR",
+  },
+  icons: {
+    icon: "/logo-hero.svg",
   },
 };
 
@@ -52,8 +60,13 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${syne.variable} ${newsreader.variable} h-full antialiased`}
+      className={`${syne.variable} ${aldrich.variable} ${ibmPlexSans.variable} h-full antialiased`}
     >
+      <link
+        rel="preconnect"
+        href="https://s3-eu-west-1.amazonaws.com"
+        crossOrigin="anonymous"
+      />
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
