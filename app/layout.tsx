@@ -64,10 +64,16 @@ export default function RootLayout({
     >
       <link
         rel="preload"
-        href="/latticexr-hero.mp4"
+        href="/latticexr-hero-poster.webp"
+        as="image"
+        type="image/webp"
+        fetchPriority="high"
+      />
+      <link
+        rel="preload"
+        href="/latticexr-hero.web.mp4"
         as="video"
         type="video/mp4"
-        fetchPriority="high"
       />
       <link
         rel="preconnect"

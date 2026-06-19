@@ -5,13 +5,14 @@ import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { HeroStepsJourney } from "@/components/HeroStepsJourney";
-import { MediaLoadingOverlay } from "@/components/MediaLoadingOverlay";
 import { siteCopy } from "@/lib/site-copy";
 
 const headlineWords = siteCopy.hero.headline.split(" ");
+const HERO_POSTER = "/latticexr-hero-poster.webp";
+const HERO_VIDEO = "/latticexr-hero.web.mp4";
 
 export function HeroPitch() {
-  const { hero, loading } = siteCopy;
+  const { hero } = siteCopy;
   const [scanDone, setScanDone] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
@@ -19,9 +20,7 @@ export function HeroPitch() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useLayoutEffect(() => {
-    if (
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setVideoReady(true);
     }
   }, []);
@@ -56,10 +55,16 @@ export function HeroPitch() {
   return (
     <section ref={sectionRef} className="relative">
       <div ref={videoLayerRef} className="pointer-events-none absolute inset-0">
-        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden bg-background">
-          {!videoReady && (
-            <MediaLoadingOverlay label={loading.heroVideo} compact />
-          )}
+        <div className="relative sticky top-0 h-[100dvh] w-full overflow-hidden bg-background">
+          <Image
+            src={HERO_POSTER}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+            aria-hidden
+          />
 
           <video
             ref={videoRef}
@@ -68,19 +73,17 @@ export function HeroPitch() {
             loop
             playsInline
             preload="auto"
+            poster={HERO_POSTER}
             className={`hero-video-layer absolute inset-0 h-full w-full object-cover ${
               videoReady ? "is-ready" : ""
             }`}
             aria-hidden
             onCanPlay={() => setVideoReady(true)}
-            onLoadedData={() => {
-              if (videoRef.current && videoRef.current.readyState >= 2) {
-                setVideoReady(true);
-              }
-            }}
+            onPlaying={() => setVideoReady(true)}
           >
-            <source src="/latticexr-hero.mp4" type="video/mp4" />
+            <source src={HERO_VIDEO} type="video/mp4" />
           </video>
+
           <div className="hero-video-overlay absolute inset-0" aria-hidden />
           <div
             className="hero-video-grid absolute inset-0 opacity-40"

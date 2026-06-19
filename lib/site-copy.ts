@@ -58,7 +58,6 @@ export const siteCopy = {
     href: "/downloads/latticexr-quest.apk",
   },
   loading: {
-    heroVideo: "Cargando video",
     scenePreview: "Cargando vista previa",
     scenePreviewHint: "Gaussian Splat · puede tardar unos segundos",
     scenePreviewFailed: "Vista previa no disponible",
