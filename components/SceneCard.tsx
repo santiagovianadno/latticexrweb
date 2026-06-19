@@ -1,25 +1,27 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Scene } from "@/lib/scenes";
+import {
+  attachPreviewToContainer,
+  isScenePreviewReady,
+  onScenePreviewReady,
+} from "@/lib/scene-preview-pool";
 
 type SceneCardProps = {
   scene: Scene;
   index: number;
 };
 
-function buildPreviewUrl(htmlPath: string, slug: string) {
-  const joiner = htmlPath.includes("?") ? "&" : "?";
-  return `${htmlPath}${joiner}noui&noanim&preview=1&hold=1&rotateSpeed=8&sceneSlug=${encodeURIComponent(slug)}`;
-}
-
 export function SceneCard({ scene, index }: SceneCardProps) {
   const [canHoverPreview, setCanHoverPreview] = useState(false);
-  const [previewReady, setPreviewReady] = useState(false);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [previewReady, setPreviewReady] = useState(() =>
+    isScenePreviewReady(scene.slug),
+  );
+  const previewContainerRef = useRef<HTMLDivElement>(null);
+  const previewIframeRef = useRef<HTMLIFrameElement | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const previewUrl = buildPreviewUrl(scene.htmlPath, scene.slug);
   const useVideo = Boolean(scene.previewVideo);
 
   useEffect(() => {
@@ -32,18 +34,42 @@ export function SceneCard({ scene, index }: SceneCardProps) {
     return () => mq.removeEventListener("change", update);
   }, []);
 
-  useEffect(() => {
-    const onMessage = (event: MessageEvent) => {
-      if (event.data?.type !== "latticexr-preview-ready") return;
-      if (event.data.slug !== scene.slug) return;
-      setPreviewReady(true);
+  useLayoutEffect(() => {
+    if (useVideo) return;
+
+    const container = previewContainerRef.current;
+    if (!container) return;
+
+    const iframe = attachPreviewToContainer(
+      scene.slug,
+      scene.htmlPath,
+      container,
+      previewReady,
+    );
+    previewIframeRef.current = iframe;
+
+    return () => {
+      if (previewIframeRef.current?.parentElement === container) {
+        container.removeChild(previewIframeRef.current);
+      }
     };
-    window.addEventListener("message", onMessage);
-    return () => window.removeEventListener("message", onMessage);
-  }, [scene.slug]);
+  }, [scene.slug, scene.htmlPath, useVideo]);
+
+  useEffect(() => {
+    if (useVideo) return;
+    return onScenePreviewReady(scene.slug, () => setPreviewReady(true));
+  }, [scene.slug, useVideo]);
+
+  useEffect(() => {
+    const iframe = previewIframeRef.current;
+    if (!iframe) return;
+    iframe.className = `scene-card-preview-frame pointer-events-none absolute inset-0 h-full w-full border-0 transition-opacity duration-500 ${
+      previewReady ? "opacity-100" : "opacity-0"
+    }`;
+  }, [previewReady]);
 
   const postToPreview = useCallback((type: string) => {
-    iframeRef.current?.contentWindow?.postMessage({ type }, "*");
+    previewIframeRef.current?.contentWindow?.postMessage({ type }, "*");
   }, []);
 
   const handleMouseEnter = useCallback(() => {
@@ -99,19 +125,11 @@ export function SceneCard({ scene, index }: SceneCardProps) {
               className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
                 previewReady ? "opacity-0" : "opacity-100"
               }`}
-              loading={index === 0 ? "eager" : "lazy"}
+              loading="eager"
+              decoding="async"
             />
 
-            <iframe
-              ref={iframeRef}
-              src={previewUrl}
-              title={`Preview: ${scene.title}`}
-              className={`scene-card-preview-frame pointer-events-none absolute inset-0 h-full w-full border-0 transition-opacity duration-500 ${
-                previewReady ? "opacity-100" : "opacity-0"
-              }`}
-              loading="eager"
-              tabIndex={-1}
-            />
+            <div ref={previewContainerRef} className="absolute inset-0" />
           </>
         )}
 

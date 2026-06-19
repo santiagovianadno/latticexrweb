@@ -1,10 +1,13 @@
 import { SiteHeader } from "@/components/SiteHeader";
 import { GitHubLink } from "@/components/GitHubLink";
 import { HeroPitch } from "@/components/HeroPitch";
+import { HomePreviewWarmup } from "@/components/HomePreviewWarmup";
 import { SceneGrid } from "@/components/SceneGrid";
 import { SectionReveal } from "@/components/SectionReveal";
 import { SplatExplorer } from "@/components/SplatExplorer";
 import { VrDownloadBanner } from "@/components/VrDownloadBanner";
+import { buildScenePreviewUrl } from "@/lib/scene-preview-pool";
+import { scenes } from "@/lib/scenes";
 import { siteCopy } from "@/lib/site-copy";
 
 export default function Home() {
@@ -12,6 +15,14 @@ export default function Home() {
 
   return (
     <div className="relative flex min-h-dvh flex-col">
+      {scenes.map((scene) => (
+        <link
+          key={scene.slug}
+          rel="prefetch"
+          href={buildScenePreviewUrl(scene.htmlPath, scene.slug)}
+        />
+      ))}
+      <HomePreviewWarmup />
       <div className="relative">
         <SiteHeader overlay />
         <HeroPitch />

@@ -63,6 +63,13 @@ export default function RootLayout({
       className={`${syne.variable} ${aldrich.variable} ${ibmPlexSans.variable} h-full antialiased`}
     >
       <link
+        rel="preload"
+        href="/latticexr-hero.mp4"
+        as="video"
+        type="video/mp4"
+        fetchPriority="high"
+      />
+      <link
         rel="preconnect"
         href="https://s3-eu-west-1.amazonaws.com"
         crossOrigin="anonymous"
