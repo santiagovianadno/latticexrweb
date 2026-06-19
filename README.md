@@ -108,29 +108,6 @@ git lfs track "public/scenes/**/*.html"
 
 Si los archivos superan los límites de GitHub o Vercel, considera hospedar las escenas en [Vercel Blob](https://vercel.com/docs/storage/vercel-blob) u otro CDN y actualiza `htmlPath` en `lib/scenes.ts` con la URL externa.
 
-## Despliegue en Vercel
-
-### 1. Repositorio en GitHub
-
-```bash
-git branch -M main
-gh repo create latticexr --public --source=. --remote=origin --push
-```
-
-O crea el repositorio manualmente en GitHub y luego:
-
-```bash
-git remote add origin https://github.com/<tu-usuario>/latticexr.git
-git push -u origin main
-```
-
-### 2. Conectar Vercel
-
-1. Ve a [vercel.com/new](https://vercel.com/new).
-2. Importa el repositorio `latticexr`.
-3. Framework: **Next.js** (detectado automáticamente).
-4. Despliega — no se requieren variables de entorno para la v1.
-
 ## Estructura
 
 ```
