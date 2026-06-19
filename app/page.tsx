@@ -1,7 +1,6 @@
 import { SiteHeader } from "@/components/SiteHeader";
 import { GitHubLink } from "@/components/GitHubLink";
 import { HeroPitch } from "@/components/HeroPitch";
-import { HomePreviewWarmup } from "@/components/HomePreviewWarmup";
 import { SceneGrid } from "@/components/SceneGrid";
 import { SectionReveal } from "@/components/SectionReveal";
 import { SplatExplorer } from "@/components/SplatExplorer";
@@ -22,7 +21,6 @@ export default function Home() {
           href={buildScenePreviewUrl(scene.htmlPath, scene.slug)}
         />
       ))}
-      <HomePreviewWarmup />
       <div className="relative">
         <SiteHeader overlay />
         <HeroPitch />
