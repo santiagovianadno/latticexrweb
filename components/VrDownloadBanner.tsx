@@ -20,7 +20,8 @@ export function VrDownloadBanner() {
         </div>
         <a
           href={vrDownload.href}
-          download
+          target="_blank"
+          rel="noopener noreferrer"
           className="inline-flex shrink-0 items-center justify-center rounded-sm border border-accent/60 bg-transparent px-6 py-3 font-[family-name:var(--font-syne)] text-xs font-semibold uppercase tracking-widest text-accent transition-colors hover:bg-accent hover:text-background"
         >
           {vrDownload.button}

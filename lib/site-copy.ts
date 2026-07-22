@@ -11,7 +11,7 @@ export const siteCopy = {
     ctaSecondary: "Explorar espacios",
   },
   github: {
-    url: "https://github.com/santiagovianadno/latticexrweb",
+    url: "https://github.com/santiagovianadno/LATTICEXR",
     button: "GitHub",
     note: "Proyecto open source",
   },
@@ -55,7 +55,8 @@ export const siteCopy = {
     description:
       "Descarga la build beta de LatticeXR para recorrer y prototipar montajes en realidad mixta (solo ha sido testeada en un Meta Quest 3).",
     button: "Descargar APK",
-    href: "/downloads/latticexr-quest.apk",
+    // APK (~402 MB): hosted on the Unity project releases, not this web repo.
+    href: "https://github.com/santiagovianadno/LATTICEXR/releases/latest/download/LatticeXRv0.999.apk",
   },
   loading: {
     scenePreview: "Cargando vista previa",

@@ -47,7 +47,8 @@ export function SiteHeader({ overlay = false }: SiteHeaderProps) {
           <GitHubLink variant="header" />
           <a
             href={vrDownload.href}
-            download
+            target="_blank"
+            rel="noopener noreferrer"
             className="btn-lit hidden items-center rounded-sm px-3 py-1.5 font-[family-name:var(--font-syne)] text-[10px] font-semibold uppercase tracking-wider md:inline-flex"
           >
             Quest APK

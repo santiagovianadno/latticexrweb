@@ -1,6 +1,10 @@
 # LatticeXR
 
-Herramienta **MR** para prototipado ágil de montajes expositivos sobre espacios reconstruidos con Gaussian Splatting. Este repositorio incluye la **web accesible** del Proyecto de Título de Diseño UC de **Santiago Viana**: catálogo de escenas propias, explorador curado de obras en [SuperSplat](https://superspl.at) y descarga del APK para Quest 3.
+Herramienta **MR** para prototipado ágil de montajes expositivos sobre espacios reconstruidos con Gaussian Splatting.
+
+Este repositorio (**latticexrweb**) es solo la **web accesible** del Proyecto de Título de Diseño UC de **Santiago Viana**: catálogo de escenas propias, explorador curado de obras en [SuperSplat](https://superspl.at) y enlace de descarga del APK Quest 3.
+
+El proyecto Unity / app Quest vive en **[santiagovianadno/LATTICEXR](https://github.com/santiagovianadno/LATTICEXR)**.
 
 ## Desarrollo local
 
@@ -20,9 +24,9 @@ Reemplaza los placeholders sin tocar los componentes:
 | Pitch, pasos, textos de secciones, footer | [`lib/site-copy.ts`](lib/site-copy.ts) |
 | Obras curadas de superspl.at (URLs reales desde Embed) | [`lib/supersplat-showcase.ts`](lib/supersplat-showcase.ts) |
 | Contexto y tags de escenas propias | [`lib/scenes.ts`](lib/scenes.ts) |
-| APK Quest 3 | [`public/downloads/latticexr-quest.apk`](public/downloads/) |
+| APK Quest 3 | Release en [LATTICEXR](https://github.com/santiagovianadno/LATTICEXR/releases) (`LatticeXRv0.999.apk`) — no va en este repo (pasa el límite de Vercel) |
 | Email y profesor guía | [`lib/site-copy.ts`](lib/site-copy.ts) → `footer` |
-| Repositorio GitHub | [`lib/site-copy.ts`](lib/site-copy.ts) → `github.url` |
+| Repositorio GitHub (app Unity) | [`lib/site-copy.ts`](lib/site-copy.ts) → `github.url` → [LATTICEXR](https://github.com/santiagovianadno/LATTICEXR) |
 
 Las URLs de superspl.at deben copiarse desde el botón **Embed** de cada escena pública (`https://superspl.at/scene/…`).
 
