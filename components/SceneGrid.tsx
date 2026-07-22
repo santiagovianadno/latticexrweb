@@ -13,7 +13,7 @@ export function SceneGrid() {
   }
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-6 sm:grid-cols-2">
       {scenes.map((scene, index) => (
         <SceneCard key={scene.slug} scene={scene} index={index} />
       ))}

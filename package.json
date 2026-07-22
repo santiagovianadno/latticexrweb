@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "eslint",
     "patch:scene": "node scripts/inject-lattice-patch.mjs",
-    "optimize:hero": "node scripts/optimize-hero-video.mjs"
+    "optimize:hero": "node scripts/optimize-hero-video.mjs",
+    "record:preview": "node scripts/record-scene-preview.mjs"
   },
   "dependencies": {
     "gsap": "^3.15.0",
@@ -24,6 +25,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
+    "playwright": "^1.61.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

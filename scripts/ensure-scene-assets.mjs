@@ -1,11 +1,8 @@
 import { execSync } from "node:child_process";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
-const SCENE_HTML = join(
-  process.cwd(),
-  "public/scenes/galeria-lo-contador/index.html",
-);
+const SCENES_DIR = join(process.cwd(), "public/scenes");
 
 function run(command) {
   console.log(`> ${command}`);
@@ -16,6 +13,14 @@ function isLfsPointer(filePath) {
   if (!existsSync(filePath)) return false;
   const head = readFileSync(filePath, "utf8").slice(0, 80);
   return head.startsWith("version https://git-lfs.github.com/spec/v1");
+}
+
+function listSceneHtmlFiles() {
+  if (!existsSync(SCENES_DIR)) return [];
+  return readdirSync(SCENES_DIR, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => join(SCENES_DIR, entry.name, "index.html"))
+    .filter((filePath) => existsSync(filePath));
 }
 
 function pullLfsAssets() {
@@ -57,16 +62,22 @@ function pullLfsAssets() {
 
 pullLfsAssets();
 
-if (isLfsPointer(SCENE_HTML)) {
-  console.error(
-    "\n[ensure-scene-assets] public/scenes/galeria-lo-contador/index.html is still a Git LFS pointer.",
-  );
+const sceneHtmlFiles = listSceneHtmlFiles();
+const stillPointers = sceneHtmlFiles.filter((filePath) => isLfsPointer(filePath));
+
+if (stillPointers.length > 0) {
+  console.error("\n[ensure-scene-assets] Scene HTML still Git LFS pointer(s):");
+  for (const filePath of stillPointers) {
+    console.error(`  - ${filePath}`);
+  }
   console.error(
     "Ensure Git LFS is enabled on GitHub and the scene blob was pushed with `git lfs push origin main`.",
   );
   process.exit(1);
 }
 
-if (existsSync(SCENE_HTML)) {
-  console.log("[ensure-scene-assets] Scene HTML OK.");
+if (sceneHtmlFiles.length > 0) {
+  console.log(
+    `[ensure-scene-assets] Scene HTML OK (${sceneHtmlFiles.length}).`,
+  );
 }
