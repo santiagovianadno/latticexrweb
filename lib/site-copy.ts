@@ -14,7 +14,7 @@ const en = {
   eyebrow: "UC Design Graduation Project",
   hero: {
     title: "LatticeXR",
-    headline: "Change how you plan your exhibitions",
+    headline: "The spatial curation pipeline for modern galleries",
     tagline:
       "A VR tool for agile prototyping of exhibition layouts on spaces reconstructed with Gaussian Splatting.",
     subcopy:
@@ -117,7 +117,7 @@ const es: typeof en = {
   eyebrow: "Proyecto de Título de Diseño UC",
   hero: {
     title: "LatticeXR",
-    headline: "Cambia la forma de planificar tus exposiciones",
+    headline: "El pipeline de curaduría espacial para galerías modernas",
     tagline:
       "Herramienta VR para prototipado ágil de montajes expositivos sobre espacios reconstruidos con Gaussian Splatting.",
     subcopy:
