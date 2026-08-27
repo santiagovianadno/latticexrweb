@@ -3,7 +3,7 @@
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { siteCopy } from "@/lib/site-copy";
+import { useSiteCopy } from "@/components/LocaleProvider";
 
 type HeroStepsJourneyProps = {
   exploreLabel: string;
@@ -72,7 +72,7 @@ export function HeroStepsJourney({ exploreLabel }: HeroStepsJourneyProps) {
   const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
   const exploreRef = useRef<HTMLDivElement>(null);
 
-  const { howItWorks } = siteCopy;
+  const { howItWorks } = useSiteCopy();
 
   useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -309,7 +309,7 @@ export function HeroStepsJourney({ exploreLabel }: HeroStepsJourneyProps) {
 
   return (
     <div
-      id="como-funciona"
+      id="how-it-works"
       ref={trackRef}
       className="relative h-[320vh] scroll-mt-24"
     >
@@ -395,7 +395,7 @@ export function HeroStepsJourney({ exploreLabel }: HeroStepsJourneyProps) {
             className="relative mt-16 flex justify-center will-change-transform md:mt-24"
           >
             <a
-              href="#montajes"
+              href="#scenes"
               className="btn-lit inline-flex min-w-[190px] items-center justify-center rounded-sm px-8 py-3.5 font-[family-name:var(--font-syne)] text-xs font-semibold uppercase tracking-[0.18em] md:min-w-[210px] md:px-10 md:py-4"
             >
               {exploreLabel}

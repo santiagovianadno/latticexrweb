@@ -1,16 +1,15 @@
 #!/usr/bin/env node
 /**
- * Graba un loop corto del preview LatticeXR (rotación desde la pose de entrada).
+ * Record a short LatticeXR preview loop (rotation from the entry pose).
  *
- * El yaw se avanza por frame (no en tiempo real del browser) para que la
- * velocidad coincida con la galería (~rotateSpeed deg/s), aunque el screenshot
- * sea lento.
+ * Yaw advances per frame (not in real browser time) so speed matches the
+ * gallery (~rotateSpeed deg/s), even if screenshots are slow.
  *
- * Uso:
+ * Usage:
  *   node scripts/record-scene-preview.mjs public/scenes/sala-lampara
  *   node scripts/record-scene-preview.mjs public/scenes/sala-lampara --port 3000
  *
- * Requiere: npm run dev (o un server en --port) + playwright + ffmpeg
+ * Requires: npm run dev (or a server on --port) + playwright + ffmpeg
  */
 import { spawn } from "node:child_process";
 import { mkdirSync, existsSync, rmSync } from "node:fs";
@@ -20,9 +19,9 @@ import { pathToFileURL } from "node:url";
 const sceneDir = resolve(process.argv[2] || "");
 const portArg = process.argv.indexOf("--port");
 const port = portArg >= 0 ? process.argv[portArg + 1] : "3000";
-/** Misma velocidad que Galería Lo Contador (lib/scene-preview-pool.ts). */
+/** Same speed as Galería Lo Contador (lib/scene-preview-pool.ts). */
 const rotateSpeed = 8;
-/** Pan suave de ida y vuelta para que el loop no salte. */
+/** Smooth back-and-forth pan so the loop does not jump. */
 const sweepSec = 5;
 const durationSec = sweepSec * 2;
 const fps = 24;
@@ -42,7 +41,7 @@ const framesDir = join(outDir, ".preview-frames");
 const outVideo = join(outDir, "preview.mp4");
 const outPoster = join(outDir, "poster.webp");
 
-// hold=1: la escena no rota sola; el script mueve el yaw por frame.
+// hold=1: the scene does not auto-rotate; the script moves yaw per frame.
 const previewPath = `/scenes/${slug}/index.html?noui&noanim&preview=1&hold=1&rotateSpeed=${rotateSpeed}&sceneSlug=${encodeURIComponent(slug)}`;
 const url = `http://localhost:${port}${previewPath}`;
 
@@ -147,7 +146,7 @@ async function main() {
     await page.evaluate((deg) => {
       window.LatticeXR.setPreviewYawOffset(deg);
     }, yaw);
-    // Deja que SuperSplat pinte el frame con el nuevo yaw.
+    // Let SuperSplat paint the frame with the new yaw.
     await page.waitForTimeout(40);
     const file = join(framesDir, `frame-${String(i).padStart(4, "0")}.png`);
     await page.screenshot({ path: file, type: "png" });

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Genera poster WebP + MP4 web optimizado desde public/latticexr-hero.mp4
- * Uso: node scripts/optimize-hero-video.mjs
+ * Generate a WebP poster + optimized web MP4 from public/latticexr-hero.mp4
+ * Usage: node scripts/optimize-hero-video.mjs
  */
 import { execSync } from "node:child_process";
 import { existsSync } from "node:fs";

@@ -476,8 +476,8 @@
         `yaw: ${a.y.toFixed(1)}° · pitch: ${a.x.toFixed(1)}° · y ${
           heightLocked ? "LOCKED" : "free"
         }<br>` +
-        `<span style="opacity:.7">Shift+click → copia [x,z] (polígono)<br>` +
-        `Ctrl+Shift+click → copia initialPosition [x,y,z]</span>`;
+        `<span style="opacity:.7">Shift+click → copy [x,z] (polygon)<br>` +
+        `Ctrl+Shift+click → copy initialPosition [x,y,z]</span>`;
     });
 
     viewer.global.app.graphicsDevice.canvas.addEventListener("click", (e) => {

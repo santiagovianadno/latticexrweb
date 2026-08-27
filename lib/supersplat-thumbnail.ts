@@ -1,7 +1,7 @@
 const POSTER_CDN =
   "https://s3-eu-west-1.amazonaws.com/images.playcanvas.com/splat";
 
-/** Extrae el id de escena desde URLs superspl.at (/s?id=… o /scene/…). */
+/** Extract the scene id from superspl.at URLs (`/s?id=…` or `/scene/…`). */
 export function getSupersplatSceneId(url: string): string | null {
   try {
     const parsed = new URL(url);
@@ -20,7 +20,7 @@ export function getSupersplatSceneId(url: string): string | null {
   }
 }
 
-/** Poster oficial usado por el visor embebido de superspl.at. */
+/** Official poster used by the embedded superspl.at viewer. */
 export function getSupersplatThumbnailUrl(
   supersplatUrl: string,
   variant: "xl" = "xl",

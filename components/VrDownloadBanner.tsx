@@ -1,11 +1,14 @@
-import { siteCopy } from "@/lib/site-copy";
+"use client";
+
+import { useSiteCopy } from "@/components/LocaleProvider";
+import { APK_HREF } from "@/lib/site-copy";
 import { WireframePanel } from "./WireframePanel";
 
 export function VrDownloadBanner() {
-  const { vrDownload } = siteCopy;
+  const { vrDownload } = useSiteCopy();
 
   return (
-    <section id="descargar-vr" className="mb-16 scroll-mt-24">
+    <section id="download-vr" className="mb-16 scroll-mt-24">
       <WireframePanel
         data-reveal-header
         className="lattice-bg-dense flex flex-col items-start justify-between gap-6 p-6 md:flex-row md:items-center md:p-8"
@@ -19,7 +22,7 @@ export function VrDownloadBanner() {
           </p>
         </div>
         <a
-          href={vrDownload.href}
+          href={APK_HREF}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex shrink-0 items-center justify-center rounded-sm border border-accent/60 bg-transparent px-6 py-3 font-[family-name:var(--font-syne)] text-xs font-semibold uppercase tracking-widest text-accent transition-colors hover:bg-accent hover:text-background"

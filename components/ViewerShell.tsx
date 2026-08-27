@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useSiteCopy } from "@/components/LocaleProvider";
 import type { Scene } from "@/lib/scenes";
 
 type ViewerShellProps = {
@@ -9,6 +10,7 @@ type ViewerShellProps = {
 };
 
 export function ViewerShell({ scene }: ViewerShellProps) {
+  const { viewer } = useSiteCopy();
   const [isLoading, setIsLoading] = useState(true);
 
   return (
@@ -17,7 +19,7 @@ export function ViewerShell({ scene }: ViewerShellProps) {
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 bg-background">
           <div className="h-8 w-8 animate-pulse-glow rounded-full border-2 border-accent border-t-transparent" />
           <p className="font-[family-name:var(--font-syne)] text-sm text-muted">
-            Cargando escena…
+            {viewer.loading}
           </p>
         </div>
       )}
@@ -36,7 +38,7 @@ export function ViewerShell({ scene }: ViewerShellProps) {
           className="pointer-events-auto inline-flex items-center gap-2 rounded-full border border-border bg-background/80 px-4 py-2 text-sm text-foreground backdrop-blur-md transition-colors hover:border-accent/50 hover:text-accent"
         >
           <span aria-hidden="true">←</span>
-          Volver
+          {viewer.back}
         </Link>
         <div className="pointer-events-none rounded-full border border-border bg-background/80 px-4 py-2 backdrop-blur-md">
           <span className="font-[family-name:var(--font-syne)] text-sm font-medium text-foreground">

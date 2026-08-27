@@ -1,4 +1,4 @@
-import { siteCopy } from "@/lib/site-copy";
+import { GITHUB_URL } from "@/lib/site-copy";
 
 type GitHubIconProps = {
   className?: string;
@@ -22,8 +22,6 @@ type GitHubLinkProps = {
 };
 
 export function GitHubLink({ variant = "header" }: GitHubLinkProps) {
-  const { github } = siteCopy;
-
   const base =
     "inline-flex items-center justify-center gap-2 font-[family-name:var(--font-syne)] transition-colors";
 
@@ -37,13 +35,13 @@ export function GitHubLink({ variant = "header" }: GitHubLinkProps) {
 
   return (
     <a
-      href={github.url}
+      href={GITHUB_URL}
       target="_blank"
       rel="noopener noreferrer"
       className={`${base} ${styles[variant]}`}
     >
       <GitHubIcon className={variant === "hero" ? "h-4 w-4" : "h-3.5 w-3.5"} />
-      <span>{github.button}</span>
+      <span>GitHub</span>
     </a>
   );
 }

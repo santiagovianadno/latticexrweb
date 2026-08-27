@@ -1,14 +1,18 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { GitHubLink } from "@/components/GitHubLink";
-import { siteCopy } from "@/lib/site-copy";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { useSiteCopy } from "@/components/LocaleProvider";
+import { APK_HREF } from "@/lib/site-copy";
 
 type SiteHeaderProps = {
   overlay?: boolean;
 };
 
 export function SiteHeader({ overlay = false }: SiteHeaderProps) {
-  const { vrDownload } = siteCopy;
+  const { nav } = useSiteCopy();
 
   return (
     <header
@@ -27,26 +31,27 @@ export function SiteHeader({ overlay = false }: SiteHeaderProps) {
         </Link>
         <nav className="flex items-center gap-3 text-sm sm:gap-4">
           <Link
-            href="/#montajes"
+            href="/#scenes"
             className="hidden text-muted transition-colors hover:text-foreground sm:inline"
           >
-            Escenas
+            {nav.scenes}
           </Link>
           <Link
-            href="/#explorar"
+            href="/#explore"
             className="text-muted transition-colors hover:text-foreground"
           >
-            Explorar
+            {nav.explore}
           </Link>
           <Link
             href="/about"
             className="text-muted transition-colors hover:text-foreground"
           >
-            Acerca de
+            {nav.about}
           </Link>
+          <LanguageToggle />
           <GitHubLink variant="header" />
           <a
-            href={vrDownload.href}
+            href={APK_HREF}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-lit hidden items-center rounded-sm px-3 py-1.5 font-[family-name:var(--font-syne)] text-[10px] font-semibold uppercase tracking-wider md:inline-flex"

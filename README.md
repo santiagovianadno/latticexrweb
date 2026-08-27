@@ -1,82 +1,82 @@
 # LatticeXR
 
-Herramienta **MR** para prototipado ágil de montajes expositivos sobre espacios reconstruidos con Gaussian Splatting.
+**MR** tool for agile prototyping of exhibition layouts on spaces reconstructed with Gaussian Splatting.
 
-Este repositorio (**latticexrweb**) es solo la **web accesible** del Proyecto de Título de Diseño UC de **Santiago Viana**: catálogo de escenas propias, explorador curado de obras en [SuperSplat](https://superspl.at) y enlace de descarga del APK Quest 3.
+This repository (**latticexrweb**) is the **accessible web** of **Santiago Viana**'s UC Design graduation project: a catalog of original scenes, a curated explorer of works on [SuperSplat](https://superspl.at), and a download link for the Quest 3 APK.
 
-El proyecto Unity / app Quest vive en **[santiagovianadno/LATTICEXR](https://github.com/santiagovianadno/LATTICEXR)**.
+The Unity / Quest app lives in **[santiagovianadno/LATTICEXR](https://github.com/santiagovianadno/LATTICEXR)**.
 
-## Desarrollo local
+## Local development
 
 ```bash
 npm install
 npm run dev
 ```
 
-Abre [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000).
 
-## Contenido editable
+## Editable content
 
-Reemplaza los placeholders sin tocar los componentes:
+Replace placeholders without touching the components:
 
-| Qué | Dónde |
+| What | Where |
 | --- | --- |
-| Pitch, pasos, textos de secciones, footer | [`lib/site-copy.ts`](lib/site-copy.ts) |
-| Obras curadas de superspl.at (URLs reales desde Embed) | [`lib/supersplat-showcase.ts`](lib/supersplat-showcase.ts) |
-| Contexto y tags de escenas propias | [`lib/scenes.ts`](lib/scenes.ts) |
-| APK Quest 3 | Release en [LATTICEXR](https://github.com/santiagovianadno/LATTICEXR/releases) (`LatticeXRv0.999.apk`) — no va en este repo (pasa el límite de Vercel) |
-| Email y profesor guía | [`lib/site-copy.ts`](lib/site-copy.ts) → `footer` |
-| Repositorio GitHub (app Unity) | [`lib/site-copy.ts`](lib/site-copy.ts) → `github.url` → [LATTICEXR](https://github.com/santiagovianadno/LATTICEXR) |
+| Pitch, steps, section copy, footer | [`lib/site-copy.ts`](lib/site-copy.ts) |
+| Curated superspl.at works (real URLs from Embed) | [`lib/supersplat-showcase.ts`](lib/supersplat-showcase.ts) |
+| Context and tags for original scenes | [`lib/scenes.ts`](lib/scenes.ts) |
+| Quest 3 APK | Release in [LATTICEXR](https://github.com/santiagovianadno/LATTICEXR/releases) (`LatticeXRv0.999.apk`) — not in this repo (exceeds the Vercel limit) |
+| Email and thesis advisor | [`lib/site-copy.ts`](lib/site-copy.ts) → `footer` |
+| GitHub repository (Unity app) | [`lib/site-copy.ts`](lib/site-copy.ts) → `github.url` → [LATTICEXR](https://github.com/santiagovianadno/LATTICEXR) |
 
-Las URLs de superspl.at deben copiarse desde el botón **Embed** de cada escena pública (`https://superspl.at/scene/…`).
+Copy superspl.at URLs from the **Embed** button on each public scene (`https://superspl.at/scene/…`).
 
-## Agregar una escena propia
+## Add an original scene
 
-1. Configura la escena en **SuperSplat Studio** (cámara, colisión, controles).
-2. Exporta como **Viewer App → HTML** (archivo único).
-3. Coloca el archivo en `public/scenes/{slug}/index.html`.
-4. Agrega una imagen de portada en `public/scenes/{slug}/poster.jpg` (o `.svg`).
-5. Registra la escena en [`lib/scenes.ts`](lib/scenes.ts):
+1. Set up the scene in **SuperSplat Studio** (camera, collision, controls).
+2. Export as **Viewer App → HTML** (single file).
+3. Place the file in `public/scenes/{slug}/index.html`.
+4. Add a cover image in `public/scenes/{slug}/poster.jpg` (or `.svg`).
+5. Register the scene in [`lib/scenes.ts`](lib/scenes.ts):
 
 ```ts
 {
-  slug: "mi-espacio",
-  title: "Mi Espacio",
-  description: "Descripción breve.",
-  htmlPath: "/scenes/mi-espacio/index.html",
-  poster: "/scenes/mi-espacio/poster.jpg",
+  slug: "my-space",
+  title: "My Space",
+  description: "Short description.",
+  htmlPath: "/scenes/my-space/index.html",
+  poster: "/scenes/my-space/poster.jpg",
 }
 ```
 
-## Ajustar cámara y límites (LatticeXR patch)
+## Adjust camera and bounds (LatticeXR patch)
 
-Cada escena puede incluir:
+Each scene can include:
 
-- `lattice-config.json` — altura de cabeza, padding de límites, yaw inicial
-- `lattice-patch.js` — control first-person WASD sin Q/E
+- `lattice-config.json` — head height, bound padding, initial yaw
+- `lattice-patch.js` — first-person WASD control without Q/E
 
-Tras exportar un HTML nuevo de SuperSplat, ejecuta:
+After exporting a new SuperSplat HTML file, run:
 
 ```bash
 node scripts/inject-lattice-patch.mjs public/scenes/<slug>
 ```
 
-Parámetros útiles en `lattice-config.json`:
+Useful parameters in `lattice-config.json`:
 
-| Campo | Descripción |
+| Field | Description |
 | --- | --- |
-| `headHeight` | Altura fija de cámara (metros/unidades de escena) |
-| `headHeightOffsetFromFloor` | Alternativa: suelo + offset (default 1.65) |
-| `boundaryPadding` | Margen interior para no salir del splat (default 0.8) |
-| `initialYaw` | Dirección inicial al entrar |
-| `initialPosition` | `[x, y, z]` opcional para punto de inicio |
-| `fov` | Campo de visión en grados (default del export: 50; recomendado 70–85) |
-| `playerRadius` | Radio del “cuerpo” para chocar con paredes (default 0.35) |
-| `walkablePolygon` | Polígono `[[x,z], ...]` del suelo transitable; si es `null`, usa el rectángulo del bbox |
-| `walls` | Paredes interiores: `{ "a": [x,z], "b": [x,z], "thickness": 0.2 }` |
-| `debug` | `true` muestra coordenadas en pantalla; Shift+click en canvas las imprime en consola |
+| `headHeight` | Fixed camera height (meters / scene units) |
+| `headHeightOffsetFromFloor` | Alternative: floor + offset (default 1.65) |
+| `boundaryPadding` | Inner margin so you do not walk out of the splat (default 0.8) |
+| `initialYaw` | Initial facing direction on enter |
+| `initialPosition` | Optional `[x, y, z]` start point |
+| `fov` | Field of view in degrees (export default: 50; recommended 70–85) |
+| `playerRadius` | “Body” radius for wall collisions (default 0.35) |
+| `walkablePolygon` | Walkable floor polygon `[[x,z], ...]`; if `null`, uses the bbox rectangle |
+| `walls` | Interior walls: `{ "a": [x,z], "b": [x,z], "thickness": 0.2 }` |
+| `debug` | `true` shows coordinates on screen; Shift+click on the canvas prints them to the console |
 
-Ejemplo de paredes interiores:
+Example interior walls:
 
 ```json
 "walls": [
@@ -85,47 +85,47 @@ Ejemplo de paredes interiores:
 ]
 ```
 
-Activa `"debug": true`, camina hasta una esquina de pared, Shift+click y copia las coordenadas desde la consola del navegador.
+Turn on `"debug": true`, walk to a wall corner, Shift+click, and copy the coordinates from the browser console.
 
-## Colisión y navegación WASD
+## Collision and WASD navigation
 
-**En LatticeXR:** la colisión básica se define en `lattice-config.json` (polígono del suelo + segmentos de pared). No es física voxel; es una aproximación geométrica que puedes afinar coordenada a coordenada.
+**In LatticeXR:** basic collision is defined in `lattice-config.json` (floor polygon + wall segments). It is not voxel physics; it is a geometric approximation you can tune coordinate by coordinate.
 
-**En SuperSplat Studio (opcional, más preciso):** puedes exportar colisión voxel real antes del HTML. Eso requiere re-exportar la escena desde [SuperSplat Studio](https://superspl.at):
+**In SuperSplat Studio (optional, more precise):** you can export real voxel collision before the HTML. That requires re-exporting the scene from [SuperSplat Studio](https://superspl.at):
 
-1. Sube geometría de colisión en **Assets → Collision**.
-2. Prueba el movimiento en el viewport.
-3. Re-exporta como HTML.
+1. Upload collision geometry in **Assets → Collision**.
+2. Test movement in the viewport.
+3. Re-export as HTML.
 
-Si un HTML ya exportado no tiene voxel collision, el patch de LatticeXR sigue siendo la vía principal para delimitar el espacio.
+If an already exported HTML file has no voxel collision, the LatticeXR patch remains the main way to bound the space.
 
-## Archivos grandes y Git LFS
+## Large files and Git LFS
 
-Las exportaciones HTML de splats suelen pesar 50–200+ MB. GitHub bloquea archivos mayores a 100 MB.
+Splat HTML exports often weigh 50–200+ MB. GitHub blocks files larger than 100 MB.
 
-Este proyecto usa **Git LFS** para archivos de escena:
+This project uses **Git LFS** for scene files:
 
 ```bash
 git lfs install
 git lfs track "public/scenes/**/*.html"
 ```
 
-Si los archivos superan los límites de GitHub o Vercel, considera hospedar las escenas en [Vercel Blob](https://vercel.com/docs/storage/vercel-blob) u otro CDN y actualiza `htmlPath` en `lib/scenes.ts` con la URL externa.
+If files exceed GitHub or Vercel limits, consider hosting the scenes on [Vercel Blob](https://vercel.com/docs/storage/vercel-blob) or another CDN, then update `htmlPath` in `lib/scenes.ts` with the external URL.
 
-## Estructura
+## Structure
 
 ```
-app/                        Páginas Next.js (home, visor, acerca de)
+app/                        Next.js pages (home, viewer, about)
 components/                 UI (HeroPitch, SplatExplorer, SceneCard…)
-lib/site-copy.ts            Textos del sitio (placeholders editables)
-lib/supersplat-showcase.ts  Obras curadas de superspl.at
-lib/scenes.ts               Registro de escenas propias
-public/scenes/              Exportaciones HTML de SuperSplat
-public/downloads/           APK Quest 3
+lib/site-copy.ts            Site copy (editable placeholders)
+lib/supersplat-showcase.ts  Curated superspl.at works
+lib/scenes.ts               Original scene registry
+public/scenes/              SuperSplat HTML exports
+public/downloads/           Quest 3 APK
 ```
 
-## Créditos
+## Credits
 
-- **Autor:** Santiago Viana
-- **Institución:** Pontificia Universidad Católica de Chile
-- **Programa:** Diseño — Proyecto de Título
+- **Author:** Santiago Viana
+- **Institution:** Pontificia Universidad Católica de Chile
+- **Program:** Design — Graduation Project

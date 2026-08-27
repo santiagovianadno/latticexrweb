@@ -1,5 +1,8 @@
 import type { Metadata, Viewport } from "next";
+import { cookies } from "next/headers";
 import { Aldrich, IBM_Plex_Sans, Syne } from "next/font/google";
+import { LocaleProvider } from "@/components/LocaleProvider";
+import { LOCALE_COOKIE, parseLocale } from "@/lib/locale";
 import "./globals.css";
 
 const syne = Syne({
@@ -31,13 +34,13 @@ export const metadata: Metadata = {
     template: "%s · LatticeXR",
   },
   description:
-    "Herramienta VR para prototipado de montajes expositivos sobre Gaussian Splats — Proyecto de Título de Diseño UC, Santiago Viana.",
+    "VR tool for prototyping exhibition layouts on Gaussian Splats — UC Design Graduation Project, Santiago Viana.",
   openGraph: {
     title: "LatticeXR",
     description:
-      "Prototipa montajes expositivos en VR y explora espacios reconstruidos con Gaussian Splatting desde el navegador.",
+      "Prototype exhibition layouts in VR and explore spaces reconstructed with Gaussian Splatting in the browser.",
     type: "website",
-    locale: "es_CL",
+    locale: "en_US",
     siteName: "LatticeXR",
   },
   icons: {
@@ -52,14 +55,17 @@ export const viewport: Viewport = {
   themeColor: "#0c0d0f",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const locale = parseLocale(cookieStore.get(LOCALE_COOKIE)?.value);
+
   return (
     <html
-      lang="es"
+      lang={locale}
       className={`${syne.variable} ${aldrich.variable} ${ibmPlexSans.variable} h-full antialiased`}
     >
       <link
@@ -80,7 +86,9 @@ export default function RootLayout({
         href="https://s3-eu-west-1.amazonaws.com"
         crossOrigin="anonymous"
       />
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <LocaleProvider initialLocale={locale}>{children}</LocaleProvider>
+      </body>
     </html>
   );
 }

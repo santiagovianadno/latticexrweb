@@ -2,12 +2,12 @@ export type SupersplatShowcaseEntry = {
   id: string;
   title: string;
   author: string;
-  /** URL pública en superspl.at (formato /s?id=…) */
+  /** Public URL on superspl.at (`/s?id=…` format) */
   supersplatUrl: string;
   thumbnail?: string;
 };
 
-/** Orden curado — distinto al listado original del autor. */
+/** Curated order — different from the author's original listing. */
 export const supersplatShowcase: SupersplatShowcaseEntry[] = [
   {
     id: "ferstel-passage",

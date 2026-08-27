@@ -5,14 +5,14 @@ import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { HeroStepsJourney } from "@/components/HeroStepsJourney";
-import { siteCopy } from "@/lib/site-copy";
+import { useSiteCopy } from "@/components/LocaleProvider";
 
-const headlineWords = siteCopy.hero.headline.split(" ");
 const HERO_POSTER = "/latticexr-hero-poster.webp";
 const HERO_VIDEO = "/latticexr-hero.web.mp4";
 
 export function HeroPitch() {
-  const { hero } = siteCopy;
+  const { hero } = useSiteCopy();
+  const headlineWords = hero.headline.split(" ");
   const [scanDone, setScanDone] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
@@ -130,7 +130,7 @@ export function HeroPitch() {
 
           <div className="hero-scroll-hint relative z-10 flex justify-center pb-8">
             <a
-              href="#como-funciona"
+              href="#how-it-works"
               className="font-[family-name:var(--font-syne)] text-[10px] uppercase tracking-[0.3em] text-muted transition-colors hover:text-foreground"
             >
               Scroll

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { siteCopy } from "@/lib/site-copy";
+import { useSiteCopy } from "@/components/LocaleProvider";
 import {
   buildSupersplatEmbedUrl,
   supersplatShowcase,
@@ -37,10 +37,10 @@ export function SplatExplorer() {
     };
   }, [selected, closeModal]);
 
-  const { explore } = siteCopy.sections;
+  const { explore } = useSiteCopy().sections;
 
   return (
-    <section id="explorar" className="mb-16 scroll-mt-24">
+    <section id="explore" className="mb-16 scroll-mt-24">
       <div
         data-reveal-header
         className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
@@ -105,7 +105,7 @@ export function SplatExplorer() {
                 onClick={closeModal}
                 className="shrink-0 rounded-sm border border-border px-3 py-1.5 font-[family-name:var(--font-syne)] text-xs uppercase tracking-wider text-muted transition-colors hover:border-accent/40 hover:text-foreground"
               >
-                Cerrar
+                {explore.close}
               </button>
             </div>
 

@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { MediaLoadingOverlay } from "@/components/MediaLoadingOverlay";
 import type { Scene } from "@/lib/scenes";
 import { buildScenePreviewUrl } from "@/lib/scene-preview-pool";
-import { siteCopy } from "@/lib/site-copy";
+import { useSiteCopy } from "@/components/LocaleProvider";
 
 type SceneCardProps = {
   scene: Scene;
@@ -16,7 +16,7 @@ const PREVIEW_FAIL_MS = 45000;
 const PREVIEW_ROOT_MARGIN = "640px 0px";
 
 export function SceneCard({ scene, index }: SceneCardProps) {
-  const { loading } = siteCopy;
+  const { loading, sceneCard } = useSiteCopy();
   const [canHoverPreview, setCanHoverPreview] = useState(false);
   const [previewReady, setPreviewReady] = useState(false);
   const [previewFailed, setPreviewFailed] = useState(false);
@@ -184,7 +184,7 @@ export function SceneCard({ scene, index }: SceneCardProps) {
           href={`/view/${scene.slug}`}
           className="absolute bottom-4 right-4 z-10 inline-flex items-center gap-2 rounded-sm border border-accent/50 bg-background/85 px-4 py-2 font-[family-name:var(--font-syne)] text-xs font-semibold uppercase tracking-widest text-accent backdrop-blur-md transition-colors hover:bg-accent hover:text-background"
         >
-          Entrar
+          {sceneCard.enter}
         </Link>
       </div>
 

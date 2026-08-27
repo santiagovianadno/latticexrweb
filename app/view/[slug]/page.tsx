@@ -18,7 +18,7 @@ export async function generateMetadata({
   const scene = getSceneBySlug(slug);
 
   if (!scene) {
-    return { title: "Escena no encontrada" };
+    return { title: "Scene not found" };
   }
 
   return {

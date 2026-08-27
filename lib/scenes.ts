@@ -4,9 +4,9 @@ export type Scene = {
   description: string;
   htmlPath: string;
   poster: string;
-  /** Loop corto (mp4/webm) — preview tipo video al hover, ideal vs iframe pesado */
+  /** Short loop (mp4/webm) — video-style hover preview, preferred over a heavy iframe */
   previewVideo?: string;
-  /** Mini case study del montaje expositivo */
+  /** Mini case study of the exhibition layout */
   context?: string;
   tags?: string[];
 };
